@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    
+    <meta charset="utf-8" />
+    <title>Тестовое задание</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <style type="text/css">
+        h1 {
+            font-size: 120%;
+            font-family: Arial;
+            font-style: normal;
+            color: black;
+            font-weight: normal;
+            margin-top: 25px;
+            margin-left: 10px;
+        }
+        
+        .redtablerow{
+            background-color: rgb(246,129,111)
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+            <v-main>
+                <v-container fluid>
+                    <v-row>
+                        <v-col>
+                            <H1>Занимаемые должности </H1>
+                        </v-col>
+                        <v-col></v-col>
+                        <v-col cols="6">
+                            <v-text-field v-model="searchByname" append-icon="mdi-magnify" placeholder="Поиск по сотруднику" align="right"></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col></v-col>
+                        <v-col></v-col>
+                        <v-col></v-col>
+                        <v-col>
+                            <v-checkbox v-model="showColumn" color="success" label="Показывать уволенных"></v-checkbox>
+                        </v-col>
+                        <v-col>
+                            <v-btn depressed  color="#81C784">Принять на должность</v-btn>
+                        </v-col>
+                        <v-col>
+                            <v-btn depressed v-on:click="addFireDate" color="rgb(246,129,111)" :disabled="selected.length == 0">{{buttontext}}</v-btn>
+                        </v-col>
+                    </v-row>
+
+                    <v-data-table :headers="headers"
+                                  :items="data"
+                                  :items-per-page="5"
+                                  class="elevation-1"
+                                  :item-class="itemRowBackground"
+                                  show-select
+                                  v-model="selected"
+                                  item-key="name"
+                                  :search="searchByname"
+                                  :custom-filter="filterByname">
+                        <template v-slot:item.data-table-select="{isSelected, select, item}">
+                            <v-simple-checkbox v-if="item.fireDate == null" :value="isSelected" v-on:input="select"></v-simple-checkbox>
+
+                        </template>
+                        <template v-slot:item.base="{item}">
+                            <v-edit-dialog v-if="item.fireDate == null" large persistent @save="saveBase(item)" >
+                                <div>{{ item.base }}</div>
+                                <template v-slot:input>
+                                    <v-text-field v-model="dialogData.base" label="База" counter autofocus></v-text-field>
+                                </template>
+                            </v-edit-dialog>
+                            <div v-else>{{ item.base }}</div>
+                        </template>
+                        <template v-slot:item.advance="{item}">
+                            <v-edit-dialog v-if="item.fireDate == null" large persistant @save="saveAdvance(item)" >
+                                <div>{{item.advance}}</div>
+                                <template v-slot:input>
+
+                                    <v-text-field v-model="dialogData.advance" label="Аванс" counter autofocus></v-text-field>
+                                </template>
+                            </v-edit-dialog>
+                            <div v-else>{{item.advance}}</div>
+                        </template>
+                        <template v-slot:item.stavka="{item}">
+                            <v-edit-dialog v-if="item.fireDate == null" large persistant cancel-text="Отменить" save-text="Сохранить" color="success" @save="saveStavka(item)" >
+                                <div>{{item.stavka.salary}}₽ {{item.stavka.fraction}}%</div>
+                                <template v-slot:input>
+                                    <v-container>
+                                        <v-row>
+                                            <v-col>
+                                                <v-text-field v-model="dialogData.salary" label="Ставка, руб" counter autofocus></v-text-field>
+                                            </v-col>
+                                            <v-col>
+                                                <v-text-field v-model="dialogData.fraction" label="Ставка, %" counter autofocus></v-text-field>
+                                            </v-col>
+
+                                        </v-row>
+
+                                    </v-container>
+
+                                </template>
+                            </v-edit-dialog>
+                            <div v-else>{{item.stavka.salary}}₽ {{item.stavka.fraction}}%</div>
+                        </template>
+                        <template v-slot:item.byhours="{item}">
+                            <v-simple-checkbox :disabled="item.fireDate!=null" v-model="item.byhours"></v-simple-checkbox>
+
+                        </template>
+
+                    </v-data-table>
+
+                    
+
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+    <script src="Script.js"></script>
+</body>
+</html>
