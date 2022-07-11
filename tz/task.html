@@ -50,7 +50,45 @@
                             <v-checkbox v-model="showColumn" color="success" label="Показывать уволенных"></v-checkbox>
                         </v-col>
                         <v-col>
-                            <v-btn depressed  color="#81C784">Принять на должность</v-btn>
+                            <v-dialog v-model="dialog" max-width="500px">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn depressed v-bind="attrs" v-on="on"  color="#81C784">Принять на должность</v-btn>
+                                </template>
+                                <v-card>
+                                    <v-card-title>Добавить сотрудника</v-card-title>
+                                    <v-card-text>
+                                        <v-container>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-text-field v-model="editedItem.name" label="Имя"> </v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-text-field v-model="editedItem.companyName" label="Компания"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-text-field v-model="editedItem.positionName" label="Должность"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-text-field v-model="editedItem.hireDate" label="Дата приёма"></v-text-field>
+                                            </v-col>
+                                            
+                                        </v-container>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1"
+                                               text
+                                               @click="dialog=false">
+                                            Cancel
+                                        </v-btn>
+                                        <v-btn color="blue darken-1"
+                                               text
+                                               @click="save">
+                                            Save
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                            
                         </v-col>
                         <v-col>
                             <v-btn depressed v-on:click="addFireDate" color="rgb(246,129,111)" :disabled="selected.length == 0">{{buttontext}}</v-btn>

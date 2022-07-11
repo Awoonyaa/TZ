@@ -14,7 +14,22 @@
 			selected: [],
 			searchByname: '',
 			data: [],
-			dialogData: { salary: 0, fraction: 0, base:0, advance: 0 }
+			dialogData: { salary: 0, fraction: 0, base: 0, advance: 0 },
+			dialog: false,
+			editedItem: {
+				name: ' ',
+				companyName: ' ',
+				positionName: ' ',
+				hireDate: ' ',
+				fireDate: null,
+				stavka: {
+					salary: 0,
+					fraction: 0,
+				},
+				base: 0,
+				advance: 0,
+				byHourse: false
+            }
             
 		}
 	},
@@ -89,7 +104,12 @@
 		},
 		saveBase: function (item) {
 			item.base = this.dialogData.base;
-        }
+		},
+		save: function () {
+			this.data.push(this.editedItem);
+			this.dialog = false;
+		}
+		
 		
 		
 		
