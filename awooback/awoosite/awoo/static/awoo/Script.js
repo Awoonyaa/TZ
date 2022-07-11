@@ -1,14 +1,14 @@
 ﻿var app = new Vue({
-    el: '#app',
-    vuetify: new Vuetify({
-        icons: {
-            iconfont: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
-        }
-    }),
-	
+	el: '#app',
+	vuetify: new Vuetify({
+		icons: {
+			iconfont: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+		}
+	}),
+
 	data() {
-		
-		
+
+
 		return {
 			showColumn: true,
 			selected: [],
@@ -17,10 +17,10 @@
 			dialogData: { salary: 0, fraction: 0, base: 0, advance: 0 },
 			dialog: false,
 			editedItem: {
-				name: ' ',
-				companyName: ' ',
-				positionName: ' ',
-				hireDate: ' ',
+				name: '',
+				companyName: '',
+				positionName: '',
+				hireDate: '',
 				fireDate: null,
 				stavka: {
 					salary: 0,
@@ -28,9 +28,9 @@
 				},
 				base: 0,
 				advance: 0,
-				byHourse: false
-            }
-            
+				byHours: false
+			}
+
 		}
 	},
 	computed: {
@@ -38,11 +38,11 @@
 			return [
 				{ text: 'Сотрудник', align: 'start', value: 'name' },
 				{ text: 'Компания', value: 'companyName' },
-				{ text: 'Должность',  value: 'positionName' },
-				{ text: 'Дата приёма',value: 'hireDate' },
+				{ text: 'Должность', value: 'positionName' },
+				{ text: 'Дата приёма', value: 'hireDate' },
 				{
 					text: 'Дата увольнения',
-					
+
 					value: 'fireDate',
 					filter: value => {
 						if (!this.showColumn && value) return false;
@@ -50,21 +50,21 @@
 					}
 				},
 				{ text: 'Ставка', value: 'stavka' },
-				{ text: 'База',  value: 'base' },
+				{ text: 'База', value: 'base' },
 				{ text: 'Аванс', value: 'advance' },
 				{ text: 'Почасовая', value: 'byhours' }
 			]
 		},
-		
+
 		buttontext() {
 			if (this.selected.length > 1) {
 				return 'Снять с должностей'
 			}
 			else {
 				return 'Снять с должности'
-            }
-        }
-		
+			}
+		}
+
 	},
 	methods: {
 		itemRowBackground: function (item) {
@@ -79,7 +79,7 @@
 				return value.includes(search)
 			} else {
 				return false
-            }
+			}
 
 		},
 		addFireDate: function () {
@@ -90,8 +90,8 @@
 
 			today = dd + '.' + mm + '.' + yyyy;
 			this.selected.forEach(data => data.fireDate = today)
-			
-			
+
+
 		},
 		saveStavka: function (item) {
 
@@ -108,18 +108,42 @@
 		save: function () {
 			this.data.push(this.editedItem);
 			this.dialog = false;
+			c = this.getCookie('csrftoken');
+			fetch('http://127.0.0.1:8000/awoo/addemployee',
+				{
+					method: 'POST',
+					mode: 'same-origin',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': c
+					},
+					body: JSON.stringify(this.editedItem)
+				})
+		},
+		getCookie: function (name) {
+			let cookieValue = null;
+			if(document.cookie && document.cookie !== '') {
+				const cookies = document.cookie.split(';');
+				for (let i = 0; i < cookies.length; i++) {
+					const cookie = cookies[i].trim();
+					if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+						break;
+					}
+				}
+			}
+			return cookieValue;
 		}
-		
-		
-		
-		
-			
+
+
+
+
 	},
 	created: function () {
 		fetch("http://127.0.0.1:8000/awoo/employees")
 			.then(response => response.json())
 			.then(data => this.data = data)
-    }
-	
-    
+	}
+
+
 })
